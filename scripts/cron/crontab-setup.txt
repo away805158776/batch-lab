@@ -1,0 +1,63 @@
+# Mac/Linux 定时任务配置指南 (Crontab)
+
+## 1. 什么是 Crontab？
+Crontab 是类 Unix 操作系统（包括 macOS 和 Linux）下的定时任务执行工具，可在后台以指定的周期自动运行指定的 Shell 命令或脚本。
+
+## 2. 如何配置定时任务？
+在终端中执行：
+```bash
+crontab -e
+```
+这会调用系统默认编辑器（通常为 vim）。按 `i` 进入插入编辑模式，编辑完成后按 `Esc` 键，输入 `:wq` 并回车以保存退出。
+
+## 3. 语法格式说明
+Crontab 的语法格式如下：
+```text
+分 时 日 月 星期 要执行的命令
+```
+例如 `0 1 * * *` 表示“每天凌晨 1:00”。
+
+## 4. 日志按日期切分最佳实践 ⏰
+为了防止单个日志文件（如 `cron.log`）无限制增长占用磁盘，推荐在 crontab 配置中**使用当前日期命名日志文件**。
+> **⚠️ 关键注意点：**
+> 在 crontab 配置中，百分号 `%` 具有特殊含义（会被解释为换行符），因此**必须使用反斜杠转义，即写成 `\%`**。例如 `$(date +\%Y\%m\%d)`。
+
+---
+
+## 5. 配置示例
+
+我们的项目根目录位于：`/Users/qujunsheng/.gemini/antigravity/scratch/batch-lab`
+
+### 方式一：使用 Scheme A (经典位置参数 - 推荐 ⭐️)
+这种写法最简洁直观，直接传递 `Job名称` 和 `Profile`：
+
+```text
+# 每天凌晨 1:00 执行文件清洗任务，使用默认 local 内存库配置，日志按日期切分
+0 1 * * * /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh csvProcessJob >> /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
+
+# 每天凌晨 2:00 执行高性能入库任务，使用 mysql 数据库配置，日志按日期切分
+0 2 * * * /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh csvToDbJob mysql >> /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
+```
+
+### 方式二：使用 Scheme B (Spring 原生格式透明透传 - 高级 ⚙️)
+如果您需要传递更多的 Spring 环境变量或多环境定制参数，新版脚本同样完美支持直接透传：
+
+```text
+# 每天凌晨 1:00 执行 CSV 任务，通过原生 -- 格式传参，并切分日志
+0 1 * * * /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh --spring.batch.job.name=csvProcessJob --custom.arg=value >> /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
+```
+
+---
+
+## 6. 排查与注意事项
+
+1. **环境检查**：macOS cron 执行环境极度精简，可能找不到 `java` 路径。本项目的 `run-job.sh` 脚本内已默认补全了 `$JAVA_HOME` 的适配及检查；如果您修改了 Java 路径，请在 `run-job.sh` 中修改默认的 `JAVA_HOME` 设置。
+2. **并发锁机制**：本项目的启动脚本已内置 PID 级别排他锁（如生成 `logs/csvProcessJob.pid`），若上一次定时任务还未执行完，下一次调度将自动跳过并优雅报错，杜绝并发产生数据脏污或任务死锁。
+3. **查看已配置任务**：
+   ```bash
+   crontab -l
+   ```
+4. **清除所有定时任务**（慎用）：
+   ```bash
+   crontab -r
+   ```

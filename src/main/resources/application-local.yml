@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:batchdb
+    driverClassName: org.h2.Driver
+    username: SA
+    password: 
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema.sql
+
+logging:
+  level:
+    com.example.batchlab: DEBUG
+    org.springframework.batch: INFO
+
+app:
+  batch:
+    input-dir: data/input
+    output-dir: data/output
+    archive-dir: data/archive

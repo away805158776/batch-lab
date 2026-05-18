@@ -1,0 +1,19 @@
+spring:
+  profiles:
+    active: local
+  main:
+    allow-bean-definition-overriding: true
+  batch:
+    jdbc:
+      initialize-schema: always
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+app:
+  batch:
+    input-dir: data/input
+    output-dir: data/output
+    archive-dir: data/archive

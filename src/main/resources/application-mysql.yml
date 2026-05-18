@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    # 连接 Docker 中的 MySQL (docker compose up -d 后即可使用)
+    url: jdbc:mysql://127.0.0.1:3306/batchlab_db?useSSL=false&serverTimezone=Asia/Tokyo&characterEncoding=utf8mb4
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: batch_user
+    password: batch_pass
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/schema.sql
+
+logging:
+  level:
+    com.example.batchlab: DEBUG
+    org.springframework.batch: INFO
+
+app:
+  batch:
+    input-dir: data/input
+    output-dir: data/output
+    archive-dir: data/archive
