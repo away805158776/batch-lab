@@ -23,3 +23,6 @@ app:
     input-dir: data/input
     output-dir: data/output
     archive-dir: data/archive
+    archive:
+      # 本地演练默认保留源文件（复制而非移动），方便反复运行 fileArchiveJob / dailyReportCompositeJob
+      keep-source: true

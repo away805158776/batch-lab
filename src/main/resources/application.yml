@@ -17,3 +17,7 @@ app:
     input-dir: data/input
     output-dir: data/output
     archive-dir: data/archive
+    archive:
+      # 默认 false = 归档时移动并删除源文件（生产环境世代归档语义）。
+      # 本地 local profile 已覆盖为 true（复制保留），见 application-local.yml。
+      keep-source: false

@@ -28,6 +28,14 @@ public class FileArchiveTasklet implements Tasklet {
     @Value("${app.batch.archive-dir}")
     private String archiveDir;
 
+    /**
+     * 是否保留源文件。
+     * true  = 复制到归档目录，原始 input 文件保留（学习/反复演练用，默认 local）。
+     * false = 移动到归档目录，删除原始文件（生产环境的"世代归档"真实语义）。
+     */
+    @Value("${app.batch.archive.keep-source:false}")
+    private boolean keepSource;
+
     @Override
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         log.info("--- Starting File Archive Tasklet ---");
@@ -60,9 +68,15 @@ public class FileArchiveTasklet implements Tasklet {
             Path sourcePath = file.toPath();
             Path targetPath = Paths.get(archiveDir, newName);
 
-            // 移动并重命名文件
-            Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
-            log.info("Archived file: {} -> {}", originalName, targetPath.toString());
+            if (keepSource) {
+                // 复制：归档一份，原始文件保留（演练时可反复运行，不会"跑一次就没了"）
+                Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                log.info("Archived (copy, source kept): {} -> {}", originalName, targetPath.toString());
+            } else {
+                // 移动：归档后删除原始文件（生产环境的世代归档语义）
+                Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                log.info("Archived (move, source removed): {} -> {}", originalName, targetPath.toString());
+            }
         }
 
         log.info("--- File Archive Tasklet Completed ---");
