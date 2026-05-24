@@ -110,7 +110,7 @@ nano ~/Library/LaunchAgents/com.batchlab.daily.plist
 
     <key>ProgramArguments</key>
     <array>
-        <string>/Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh</string>
+        <string>/Users/qujunsheng/Projects/batch-lab/scripts/run-job.sh</string>
         <string>dailyReportCompositeJob</string>
     </array>
 
@@ -123,9 +123,9 @@ nano ~/Library/LaunchAgents/com.batchlab.daily.plist
     </dict>
 
     <key>StandardOutPath</key>
-    <string>/Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/launchd.log</string>
+    <string>/Users/qujunsheng/Projects/batch-lab/logs/launchd.log</string>
     <key>StandardErrorPath</key>
-    <string>/Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/launchd-error.log</string>
+    <string>/Users/qujunsheng/Projects/batch-lab/logs/launchd-error.log</string>
 
     <key>EnvironmentVariables</key>
     <dict>
@@ -172,7 +172,7 @@ crontab -e
 
 # 3. 粘贴以下内容 (每天凌晨 1 点跑一次终极串联 Job，使用默认 local 配置，日志按日期切分)
 # ⚠️ 注意: 在 crontab 中 % 必须用 \ 转义，写成 \%
-0 1 * * * /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh dailyReportCompositeJob >> /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
+0 1 * * * /Users/qujunsheng/Projects/batch-lab/scripts/run-job.sh dailyReportCompositeJob >> /Users/qujunsheng/Projects/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
 
 # 4. 保存退出后查看
 crontab -l

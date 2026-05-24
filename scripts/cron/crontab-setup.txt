@@ -26,17 +26,19 @@ Crontab 的语法格式如下：
 
 ## 5. 配置示例
 
-我们的项目根目录位于：`/Users/qujunsheng/.gemini/antigravity/scratch/batch-lab`
+我们的项目根目录位于：`/Users/qujunsheng/Projects/batch-lab`
+
+> **⚠️ macOS 路径注意：** 不要把项目放在 `文档(Documents)`、`桌面(Desktop)`、`下载(Downloads)` 里，这些目录受系统隐私保护(TCC)，cron 后台无权访问会报权限错误。放在家目录下的普通文件夹(如 `~/Projects`)即可。
 
 ### 方式一：使用 Scheme A (经典位置参数 - 推荐 ⭐️)
 这种写法最简洁直观，直接传递 `Job名称` 和 `Profile`：
 
 ```text
 # 每天凌晨 1:00 执行文件清洗任务，使用默认 local 内存库配置，日志按日期切分
-0 1 * * * /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh csvProcessJob >> /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
+0 1 * * * /Users/qujunsheng/Projects/batch-lab/scripts/run-job.sh csvProcessJob >> /Users/qujunsheng/Projects/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
 
 # 每天凌晨 2:00 执行高性能入库任务，使用 mysql 数据库配置，日志按日期切分
-0 2 * * * /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh csvToDbJob mysql >> /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
+0 2 * * * /Users/qujunsheng/Projects/batch-lab/scripts/run-job.sh csvToDbJob mysql >> /Users/qujunsheng/Projects/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
 ```
 
 ### 方式二：使用 Scheme B (Spring 原生格式透明透传 - 高级 ⚙️)
@@ -44,7 +46,7 @@ Crontab 的语法格式如下：
 
 ```text
 # 每天凌晨 1:00 执行 CSV 任务，通过原生 -- 格式传参，并切分日志
-0 1 * * * /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/scripts/run-job.sh --spring.batch.job.name=csvProcessJob --custom.arg=value >> /Users/qujunsheng/.gemini/antigravity/scratch/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
+0 1 * * * /Users/qujunsheng/Projects/batch-lab/scripts/run-job.sh --spring.batch.job.name=csvProcessJob --custom.arg=value >> /Users/qujunsheng/Projects/batch-lab/logs/cron-\$(date +\%Y\%m\%d).log 2>&1
 ```
 
 ---
