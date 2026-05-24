@@ -1,6 +1,6 @@
 # 现代化企业级 Spring Batch 实验场 (Batch-Lab)
 
-本工程是一个用于深度演练 Spring Batch、文件处理、MyBatis 数据库操作以及 Shell/Cron 调度的综合型现代化实验场。
+本工程是一个用于深度演练 Spring Batch、文件的处理、MyBatis 数据库操作以及 Shell/Cron 调度的综合型现代化实验场。
 它严格遵循企业级 Java 后端架构，支持多 Job 组装与独立运行，完美适配长期扩展需求。
 
 ## 🎯 架构体系
